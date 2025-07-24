@@ -1,0 +1,15 @@
+# Ignore virtual environment folder
+venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore common system files
+.DS_Store
+Thumbs.db
+
