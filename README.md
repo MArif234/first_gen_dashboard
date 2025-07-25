@@ -49,7 +49,7 @@ I focused on six research questions throughout this project and used data analys
 ### 2. What majors show the highest wage growth from early career to mid-career?
 - Cleaned dataset to make sure there were no dollar signs or commas
 - Subtracted early career salary from mid-career salary to determine wage growth
-- sorted majors by their wage growth amount and displayed the top 10
+- Sorted majors by their wage growth amount and displayed the top 10
 ---
 ### 3. Is there a correlation between the graduate degree share and mid-career wage?
 - Displayed data with matplotlib
