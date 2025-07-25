@@ -40,11 +40,33 @@ This project looks into the outcomes of college majors by exploring the followin
 
 ## Detailed Research Questions and Methods
 
-1. What are the top 10 majors with the lowest unemployment, underemployment, or highest wage?
-2. What majors show the highest wage growth from early career to mid-career?
-3. Is there a correlation between graduate degree share and mid-career wage?
-4. What majors combine low unemployment with high mid-career wages?
-5. Which majors have high early-career salaries but low wage growth?
-6. Can we predict mid-career salaries using early-career data and unemployment metrics?
+I focused on six research questions throughout this project and used data analysis, data science, and machine learning techniques to answer them.
 
+---
+### 1. What are the top 10 majors with the lowest unemployment, underemployment, or highest wages?
+- Used `pandas.sort_values()` to sort by the category that I wanted and then displayed the values.
+- Wanted this to serve as a brief overview of the turnout of different majors.
+---
+### 2. What majors show the highest wage growth from early career to mid-career?
+- Cleaned dataset to make sure there were no dollar signs or commas
+- Subtracted early career salary from mid-career salary to determine wage growth
+- sorted majors by their wage growth amount and displayed the top 10
+---
+### 3. Is there a correlation between the graduate degree share and mid-career wage?
+- Displayed data with matplotlib
+- Calculated Pearson correlation value
+- Wanted to specifically test whether getting advanced degrees actually leads to more pay
+---
+### 4. Which majors combine low unemployment and high mid-career wages?
+- Used the sliding bar feature in Streamlit to let the user determine their desired wage and unemployment rates
+- Helps the user find the balance between job security and high pay
+---
+### 5. Which majors have high early-career salaries but low wage growth?
+- Let the user define what percentile they want using the slider feature
+- Want to highlight the salary "trap" of majors that have great early career salary but little long term growth
+---
+### 6. Can we predict mid-career salaries using early-career data and employment metrics?
+- Used two machine learning models: Linear Regression and Random Foreest Regressor
+- Trained the models on Early Career Wage, Grad Degree Share, Unemployment, and Underemployment
+- Compared the model using the R^2 and plotted the actual vs the predicted values
 
