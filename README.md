@@ -36,7 +36,6 @@ This project looks into the outcomes of college majors by exploring the followin
 - Identifying majors with high early salaries but low wage growth
 - Visualize relationships with scatter plots
 - Predict mid-career salaries using two machine learning models and compare their performance
-- Display feature importance to understand which factors influence salary predictions most
 
 ## Detailed Research Questions and Methods
 
