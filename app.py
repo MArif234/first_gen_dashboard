@@ -8,7 +8,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from sklearn.ensemble import RandomForestRegressor
 from data_files import load_salary_data
-
+from visuals import (
+  show_majors_based_on_category,
+  plot_grad_deg_vs_mid_career_salary,
+  show_low_return_majors,
+  plot_early_vs_growth,
+  plot_lin_reg_predictions,
+  plot_rand_for_predictions,
+  show_features_importance
+)
 
 # Loading up the data
 df = load_salary_data("majors_data.csv")
@@ -23,23 +31,7 @@ st.write("Explore majors in regards to wage, unemployment, and underemployment."
 
 # the 4 metrics are Unemployment Rate, Underemployment Rate, Median Wage Early Career, Median Wage Mid-Career
 
-metric_options = {
-  "Unemployment Rate": "Unemployment",
-  "Underemployment Rate": "Underemployment",
-  "Median Wage Early Career": "Wage_Early",
-  "Median Wage Mid-Career": "Wage_Mid"
-}
-
-choice = st.selectbox("Choose a category you would like to sort by:", list(metric_options.keys()))
-metric = metric_options[choice]
-
-# sorts df by column chosen in the metric
-# sorts column from smallest to largest
-sorted_df = df.sort_values(by=metric, ascending=True)
-
-st.subheader(f"Top 10 majors by lowest {metric}")
-st.table(sorted_df[["Major", metric]].head(10))
-
+show_majors_based_on_category(df)
 
 
 # What majors have the highest wage growth from early career to mid-career?
@@ -53,20 +45,12 @@ st.table(top_growth[["Major", "Wage_Growth"]])
 
 st.subheader("Relationship Between Graduate Degree Share and Mid-Career Salary")
 
-fig, ax = plt.subplots()
-ax.scatter(df["Grad_Degree_Share"], df["Wage_Mid"], alpha=0.7)
-ax.set_xlabel("Share with Graduate Degree")
-ax.set_ylabel("Median Mid-Career Salary ($)")
-ax.set_title("Grad Degree Share vs. Mid-Career Salary")
-
-st.pyplot(fig)
+plot_grad_deg_vs_mid_career_salary(df)
 
 correlation = df["Grad_Degree_Share"].corr(df["Wage_Mid"])
 st.write(f"Correlation between Grad Degree Share and Mid-Career Wage: {correlation:.2f}")
 
-low_return = df[(df["Grad_Degree_Share"] > 0.5) & (df["Wage_Mid"] < 70000)]
-st.subheader("Major with High Grad Share but Low Mid-Career Wages")
-st.table(low_return[["Major", "Grad_Degree_Share", "Wage_Mid"]])
+show_low_return_majors(df)
 
 # Which majors offer low employment rates and high mid-career wages (best stability + pay combo)?
 
@@ -112,19 +96,7 @@ st.table(low_growth_high_early[["Major", "Wage_Early", "Wage_Mid", "Wage_Growth"
 
 # Create a plot for the majors
 
-fig, ax = plt.subplots()
-ax.scatter(df["Wage_Early"], df["Wage_Growth"], alpha=0.6, label="All Majors", color="gray")
-
-# Highlight Selected Majors
-
-ax.scatter(low_growth_high_early["Wage_Early"], low_growth_high_early["Wage_Growth"], color='red', label="Filtered Majors")
-
-ax.set_xlabel("Early Career Salary ($)")
-ax.set_ylabel("Wage Growth (Mid - Early Career)")
-ax.set_title("Early Career Salary vs. Wage Growth")
-ax.legend()
-
-st.pyplot(fig)
+plot_early_vs_growth(df, low_growth_high_early)
 
 # Goal: Predict Mid-Career Salary for College Majors
 
@@ -169,13 +141,7 @@ results_df = pd.DataFrame({
 st.subheader("Actual vs Predicted Mid-Career Salary (Linear Regression)")
 st.dataframe(results_df.reset_index(drop=True))
 
-fig, ax = plt.subplots()
-ax.scatter(y_test, lr_predictions, alpha=0.6)
-ax.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--') 
-ax.set_xlabel("Actual Mid-Career Salary")
-ax.set_ylabel("Predicted Mid-Career Salary")
-ax.set_title("Linear Regression: Actual vs Predicted Mid-Career Salaries")
-st.pyplot(fig)
+plot_lin_reg_predictions(y_test, lr_predictions)
 
 lr_score = r2_score(y_test, lr_predictions)
 st.write(f"Linear Regression R^2 Score: {lr_score:.2f}")
@@ -204,13 +170,7 @@ rf_results_df = pd.DataFrame({
 st.markdown("** Table: Actual vs Predicted (Random Forest)**")
 st.dataframe(rf_results_df.reset_index(drop=True))
 
-fig2, ax2 = plt.subplots()
-ax2.scatter(y_test, rf_predictions, alpha=0.6, color='green')
-ax2.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'r--')
-ax2.set_xlabel("Actual Mid-Career Salary")
-ax2.set_ylabel("Predicted Salary (RF)")
-ax2.set_title("Actual vs Predicted Mid-Career Salaries (Random Forest)")
-st.pyplot(fig2)
+plot_rand_for_predictions(y_test, rf_predictions)
 
 # R^2 Score
 rf_score = r2_score(y_test, rf_predictions)
