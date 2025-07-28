@@ -17,6 +17,7 @@ from visuals import (
   plot_rand_for_predictions,
   show_features_importance
 )
+from ml import train_ml_models
 
 # Loading up the data
 df = load_salary_data("majors_data.csv")
@@ -98,6 +99,7 @@ st.table(low_growth_high_early[["Major", "Wage_Early", "Wage_Mid", "Wage_Growth"
 
 plot_early_vs_growth(df, low_growth_high_early)
 
+
 # Goal: Predict Mid-Career Salary for College Majors
 
 
@@ -112,86 +114,21 @@ This dashboard uses **machine learning models** to predict the median mid-career
 Then we compare their performance and explore which features were the most influential. 
          """)
 
+ml_results = train_ml_models(df)
 
+st.subheader("Model Performance (Correlation Coefficient)")
 
-# input variables
-X = df[["Wage_Early", "Grad_Degree_Share", "Unemployment", "Underemployment"]]
+st.write("**Linear Regression Correlation Coefficient**", round(ml_results["Linear Regression Correlation"], 2))
 
-# variable I want to predict
-y = df["Wage_Mid"]
+st.write("**Random Forest Correlation Coefficient Score:**", round(ml_results["Random Forest Correlation"], 2))
 
-# split up data into training and testing data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Show Prediction vs Actual Results
 
-st.subheader("Linear Regression Model Results")
-# Training the model
-lr_model = LinearRegression()
-lr_model.fit(X_train, y_train)
-lr_predictions = lr_model.predict(X_test)
+st.subheader("Compare Predictions vs. Actual Mid-Career Salaries")
 
-
-# creating a DataFrame showing actual vs predicted
-
-results_df = pd.DataFrame({
-  "Major": df.loc[y_test.index, "Major"],
-  "Actual Mid-Career Salary": y_test,
-  "Predicted Mid-Career Salary": lr_predictions
-}) 
-
-st.subheader("Actual vs Predicted Mid-Career Salary (Linear Regression)")
-st.dataframe(results_df.reset_index(drop=True))
-
-plot_lin_reg_predictions(y_test, lr_predictions)
-
-lr_score = r2_score(y_test, lr_predictions)
-st.write(f"Linear Regression R^2 Score: {lr_score:.2f}")
-
-if lr_score > 0.7:
-  st.write("This means the model does a good job explaining differences in mid-career salaries based on the selected factors.")
-elif lr_score > 0.4:
-  st.write("The model has some predictive power, but it misses other factors that are likely playing a big role in mid-career salaries.")
-else:
-  st.write("The model doesn't explain much of the variation in mid-career salaries. It suggests the input variables aren't strong predictors on their own.")
-
-# Random Forest Regression
-
-st.subheader("Random Forest Regression Model Results")
-rf_model = RandomForestRegressor(n_estimators=100, random_state=42)
-rf_model.fit(X_train, y_train)
-rf_predictions = rf_model.predict(X_test)
-
-rf_results_df = pd.DataFrame({
-  "Major": df.loc[y_test.index, "Major"],
-  "Actual Mid-Career Salary": y_test,
-  "Predicted (Random Forest)": rf_predictions
+comparison_df = pd.DataFrame({
+  "Actual": ml_results["Test Target"],
+  "Linear Regression": ml_results["Linear Regression Predictions"],
+  "Random Forest": ml_results["Random Forest Predictions"]
 })
-
-# Display Table and Scatter Plot
-st.markdown("** Table: Actual vs Predicted (Random Forest)**")
-st.dataframe(rf_results_df.reset_index(drop=True))
-
-plot_rand_for_predictions(y_test, rf_predictions)
-
-# R^2 Score
-rf_score = r2_score(y_test, rf_predictions)
-st.markdown(f"**Random Forest R^2 Score:**  {rf_score:.2f}")
-
-# Feature Importance
-st.subheader("Feature Importance (Random Forest)")
-importances = pd.Series(rf_model.feature_importances_, index=X.columns)
-st.bar_chart(importances)
-
-# Model Comparison
-st.subheader("Model Comparison")
-
-st.markdown(f"""
-- **Linear Regression R^2**: `{lr_score:.2f}`
-- **Random Forest R^2**: `{rf_score:.2f}`
-            """)
-
-if rf_score > lr_score:
-  st.write(f"Random Forst performed better than Linear Regression (RF: {rf_score:.2f}) vs LR: {lr_score:.2f}")
-elif rf_score < lr_score:
-  st.write(f"Linear Regression performed slightly better (LR: {lr_score:.2f} vs RF: {rf_score:.2f})")
-else:
-  st.write("Both models performed equally based on R^2 score.")
+st.dataframe(comparison_df.head(10))
