@@ -13,3 +13,13 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# VSCode settings folder
+.vscode/
+
+# Python virtual environment folders (if you have others)
+Lib/
+Scripts/
+pyvenv.cfg
+
+# Optional: If you have other env folders or config files
+.env/
