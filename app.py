@@ -7,10 +7,11 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from sklearn.ensemble import RandomForestRegressor
+from data_files import load_salary_data
 
 
 # Loading up the data
-df = pd.read_csv("majors_data.csv")
+df = load_salary_data("majors_data.csv")
 
 # Title and Description of Project
 st.title("Learn About College Degree Outcomes")
@@ -19,8 +20,18 @@ st.write("Explore majors in regards to wage, unemployment, and underemployment."
 # Creating dropdown menu for category of choice
 
 # Question: What are the top 10 college majors with the lowest [metric]?
+
 # the 4 metrics are Unemployment Rate, Underemployment Rate, Median Wage Early Career, Median Wage Mid-Career
-metric = st.selectbox("Choose a category you would like to sort by:", ["Unemployment Rate", "Underemployment Rate", "Median Wage Early Career", "Median Wage Mid-Career"])
+
+metric_options = {
+  "Unemployment Rate": "Unemployment",
+  "Underemployment Rate": "Underemployment",
+  "Median Wage Early Career": "Wage_Early",
+  "Median Wage Mid-Career": "Wage_Mid"
+}
+
+choice = st.selectbox("Choose a category you would like to sort by:", list(metric_options.keys()))
+metric = metric_options[choice]
 
 # sorts df by column chosen in the metric
 # sorts column from smallest to largest
@@ -29,25 +40,11 @@ sorted_df = df.sort_values(by=metric, ascending=True)
 st.subheader(f"Top 10 majors by lowest {metric}")
 st.table(sorted_df[["Major", metric]].head(10))
 
-# renaming columns for simplicity
-df.rename(columns={
-  "Median Wage Early Career": "Wage_Early",
-  "Median Wage Mid-Career": "Wage_Mid",
-  "Unemployment Rate": "Unemployment",
-  "Underemployment Rate": "Underemployment",
-  "Share with Graduate Degree": "Grad_Degree_Share"
-}, inplace=True)
+
 
 # What majors have the highest wage growth from early career to mid-career?
 
-df["Wage_Early"] = df["Wage_Early"].replace(r'[\$,]','', regex=True)
-df["Wage_Mid"] = df["Wage_Mid"].replace(r'[\$,]','',regex=True)
 
-
-df["Wage_Early"] = pd.to_numeric(df["Wage_Early"], errors="coerce")
-df["Wage_Mid"] = pd.to_numeric(df["Wage_Mid"], errors="coerce")
-
-df["Wage_Growth"] = df["Wage_Mid"] - df["Wage_Early"]
 top_growth = df.sort_values("Wage_Growth", ascending=False).head(10)
 st.subheader("Top Majors by Wage Growth")
 st.table(top_growth[["Major", "Wage_Growth"]])
