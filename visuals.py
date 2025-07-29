@@ -21,7 +21,7 @@ def show_majors_based_on_category(df):
   # Grad Degree Share = % of ppl that completed grad degree
 def plot_grad_deg_vs_mid_career_salary(df):
 
-  st.subheader("Relationship Between Graduate Degree Share and Mid-Career Salary")
+  
 
   fig, ax = plt.subplots()
 
