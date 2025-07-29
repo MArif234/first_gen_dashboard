@@ -12,7 +12,7 @@ I used a simple dataset from the Federal Reserve Bank of New York titled "Labor 
 
 Check out the interactive dashboard here:
 
-[https://firstgendashboard-9gbpg92vwpvi9fuxtm5qfd.streamlit.app/](https://firstgendashboard-9gbpg92vwpvi9fuxtm5qfd.streamlit.app/)
+[https://firstgendashboard-9gbpg92vwpvi9fuxtm5qfd.streamlit.app/]
 
 If you would like to see a video walkthrough of the dashboard, please reference this link: (https://youtu.be/WA0T4X29zgM)[https://youtu.be/WA0T4X29zgM]
 ## Technologies Used
